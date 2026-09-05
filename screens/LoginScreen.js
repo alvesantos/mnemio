@@ -9,13 +9,14 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import { login } from '../api';
+import { useAuth } from '../context/AuthContext';
 
 function getErrorMessage(err) {
   return err?.response?.data?.detail || 'Não foi possível entrar. Tente novamente.';
 }
 
-export default function LoginScreen({ onLogin, onGoToRegister }) {
+export default function LoginScreen({ navigation }) {
+  const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -29,8 +30,7 @@ export default function LoginScreen({ onLogin, onGoToRegister }) {
     setError(null);
     setLoading(true);
     try {
-      const user = await login({ email: email.trim(), password });
-      onLogin(user);
+      await login({ email: email.trim(), password });
     } catch (err) {
       setError(getErrorMessage(err));
     } finally {
@@ -75,7 +75,7 @@ export default function LoginScreen({ onLogin, onGoToRegister }) {
         {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.buttonText}>Entrar</Text>}
       </Pressable>
 
-      <Pressable onPress={onGoToRegister} style={styles.linkWrap}>
+      <Pressable onPress={() => navigation.navigate('Register')} style={styles.linkWrap}>
         <Text style={styles.link}>Não tem conta? Cadastre-se</Text>
       </Pressable>
     </KeyboardAvoidingView>

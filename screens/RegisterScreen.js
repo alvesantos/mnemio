@@ -9,13 +9,14 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import { register } from '../api';
+import { useAuth } from '../context/AuthContext';
 
 function getErrorMessage(err) {
   return err?.response?.data?.detail || 'Não foi possível cadastrar. Tente novamente.';
 }
 
-export default function RegisterScreen({ onRegister, onGoToLogin }) {
+export default function RegisterScreen({ navigation }) {
+  const { register } = useAuth();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -34,8 +35,7 @@ export default function RegisterScreen({ onRegister, onGoToLogin }) {
     setError(null);
     setLoading(true);
     try {
-      const user = await register({ name: name.trim(), email: email.trim(), password });
-      onRegister(user);
+      await register({ name: name.trim(), email: email.trim(), password });
     } catch (err) {
       setError(getErrorMessage(err));
     } finally {
@@ -88,7 +88,7 @@ export default function RegisterScreen({ onRegister, onGoToLogin }) {
         {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.buttonText}>Cadastrar</Text>}
       </Pressable>
 
-      <Pressable onPress={onGoToLogin} style={styles.linkWrap}>
+      <Pressable onPress={() => navigation.navigate('Login')} style={styles.linkWrap}>
         <Text style={styles.link}>Já tem conta? Entrar</Text>
       </Pressable>
     </KeyboardAvoidingView>
