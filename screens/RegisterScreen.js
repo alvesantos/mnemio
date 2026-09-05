@@ -9,28 +9,33 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import { login } from '../api';
+import { register } from '../api';
 
 function getErrorMessage(err) {
-  return err?.response?.data?.detail || 'Não foi possível entrar. Tente novamente.';
+  return err?.response?.data?.detail || 'Não foi possível cadastrar. Tente novamente.';
 }
 
-export default function LoginScreen({ onLogin, onGoToRegister }) {
+export default function RegisterScreen({ onRegister, onGoToLogin }) {
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   async function handleSubmit() {
-    if (!email || !password) {
-      setError('Preenche email e senha.');
+    if (!name || !email || !password) {
+      setError('Preenche todos os campos.');
+      return;
+    }
+    if (password.length < 8) {
+      setError('Senha precisa ter no mínimo 8 caracteres.');
       return;
     }
     setError(null);
     setLoading(true);
     try {
-      const user = await login({ email: email.trim(), password });
-      onLogin(user);
+      const user = await register({ name: name.trim(), email: email.trim(), password });
+      onRegister(user);
     } catch (err) {
       setError(getErrorMessage(err));
     } finally {
@@ -47,8 +52,16 @@ export default function LoginScreen({ onLogin, onGoToRegister }) {
         <Text style={styles.logoPlaceholderText}>LOGO</Text>
       </View>
 
-      <Text style={styles.title}>Entrar</Text>
+      <Text style={styles.title}>Criar conta</Text>
 
+      <TextInput
+        style={styles.input}
+        placeholder="Nome"
+        placeholderTextColor="#999"
+        autoComplete="name"
+        value={name}
+        onChangeText={setName}
+      />
       <TextInput
         style={styles.input}
         placeholder="Email"
@@ -61,10 +74,10 @@ export default function LoginScreen({ onLogin, onGoToRegister }) {
       />
       <TextInput
         style={styles.input}
-        placeholder="Senha"
+        placeholder="Senha (mín. 8 caracteres)"
         placeholderTextColor="#999"
         secureTextEntry
-        autoComplete="password"
+        autoComplete="password-new"
         value={password}
         onChangeText={setPassword}
       />
@@ -72,11 +85,11 @@ export default function LoginScreen({ onLogin, onGoToRegister }) {
       {error && <Text style={styles.error}>{error}</Text>}
 
       <Pressable style={styles.button} onPress={handleSubmit} disabled={loading}>
-        {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.buttonText}>Entrar</Text>}
+        {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.buttonText}>Cadastrar</Text>}
       </Pressable>
 
-      <Pressable onPress={onGoToRegister} style={styles.linkWrap}>
-        <Text style={styles.link}>Não tem conta? Cadastre-se</Text>
+      <Pressable onPress={onGoToLogin} style={styles.linkWrap}>
+        <Text style={styles.link}>Já tem conta? Entrar</Text>
       </Pressable>
     </KeyboardAvoidingView>
   );
