@@ -2,6 +2,7 @@ import { useCallback, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import {
   ActivityIndicator,
+  Alert,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -83,7 +84,7 @@ function AchievementCard({ achievement, colors, accent }) {
 }
 
 export default function PerfilScreen() {
-  const { user, logout } = useAuth();
+  const { user, logout, deleteAccount } = useAuth();
   const { colors } = useTheme();
   const insets = useSafeAreaInsets();
   const [stats, setStats] = useState(null);
@@ -101,6 +102,36 @@ export default function PerfilScreen() {
       };
     }, [])
   );
+
+  function confirmDelete() {
+    Alert.alert(
+      'Excluir conta',
+      'Isso apaga sua conta e TODAS as suas coleções, anotações e conquistas. '
+        + 'A ação é permanente e não pode ser desfeita.',
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        {
+          text: 'Continuar',
+          style: 'destructive',
+          onPress: () =>
+            Alert.alert('Tem certeza?', 'Última confirmação. Não há como recuperar depois.', [
+              { text: 'Cancelar', style: 'cancel' },
+              {
+                text: 'Excluir tudo',
+                style: 'destructive',
+                onPress: async () => {
+                  try {
+                    await deleteAccount();
+                  } catch {
+                    Alert.alert('Erro', 'Não foi possível excluir a conta. Tente novamente.');
+                  }
+                },
+              },
+            ]),
+        },
+      ]
+    );
+  }
 
   const unlockedCount = stats?.achievements.filter((a) => a.unlocked).length ?? 0;
   // Desbloqueadas primeiro; dentro de cada grupo, as mais próximas do alvo.
@@ -183,8 +214,13 @@ export default function PerfilScreen() {
         style={[styles.logoutButton, { borderColor: colors.border }]}
         onPress={logout}
       >
-        <Ionicons name="log-out-outline" size={18} color={colors.danger} />
-        <Text style={[styles.logoutText, { color: colors.danger }]}>Sair</Text>
+        <Ionicons name="log-out-outline" size={18} color={colors.heading} />
+        <Text style={[styles.logoutText, { color: colors.heading }]}>Sair</Text>
+      </Pressable>
+
+      <Pressable style={styles.deleteButton} onPress={confirmDelete}>
+        <Ionicons name="trash-outline" size={15} color={colors.danger} />
+        <Text style={[styles.deleteText, { color: colors.danger }]}>Excluir conta</Text>
       </Pressable>
     </ScrollView>
   );
@@ -286,4 +322,12 @@ const styles = StyleSheet.create({
     marginTop: 6,
   },
   logoutText: { fontSize: 15, fontWeight: '700' },
+  deleteButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    paddingVertical: 12,
+  },
+  deleteText: { fontSize: 13.5, fontWeight: '600' },
 });

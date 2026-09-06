@@ -46,3 +46,8 @@ export async function fetchMe() {
 export async function logout() {
   await clearToken();
 }
+
+export async function deleteAccount() {
+  await api.delete('/auth/me');
+  await clearToken();
+}
