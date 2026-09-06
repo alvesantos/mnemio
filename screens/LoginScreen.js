@@ -122,6 +122,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     marginBottom: 12,
     fontSize: 16,
+    // Sem cor explícita o Android renderiza o texto em branco quando o
+    // sistema/autofill está em dark mode, sumindo com o conteúdo digitado.
+    color: '#1f1f1f',
+    backgroundColor: '#fff',
   },
   button: {
     width: '100%',

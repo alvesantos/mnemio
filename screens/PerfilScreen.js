@@ -15,6 +15,45 @@ import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { fetchStats } from '../resources';
 
+const THEME_OPTIONS = [
+  { key: 'light', label: 'Claro', icon: 'sunny' },
+  { key: 'dark', label: 'Escuro', icon: 'moon' },
+];
+
+function ThemeSwitch({ mode, setTheme, colors }) {
+  return (
+    <View style={[styles.themeSwitch, { backgroundColor: colors.surfaceAlt }]}>
+      {THEME_OPTIONS.map((option) => {
+        const selected = option.key === mode;
+        return (
+          <Pressable
+            key={option.key}
+            style={[
+              styles.themeOption,
+              selected && { backgroundColor: colors.surface, borderColor: colors.border },
+            ]}
+            onPress={() => setTheme(option.key)}
+          >
+            <Ionicons
+              name={option.icon}
+              size={16}
+              color={selected ? colors.heading : colors.textFaint}
+            />
+            <Text
+              style={[
+                styles.themeLabel,
+                { color: selected ? colors.heading : colors.textFaint },
+              ]}
+            >
+              {option.label}
+            </Text>
+          </Pressable>
+        );
+      })}
+    </View>
+  );
+}
+
 function StatTile({ value, label, colors }) {
   return (
     <View style={[styles.statTile, { backgroundColor: colors.surface, borderColor: colors.border }]}>
@@ -85,7 +124,7 @@ function AchievementCard({ achievement, colors, accent }) {
 
 export default function PerfilScreen() {
   const { user, logout, deleteAccount } = useAuth();
-  const { colors } = useTheme();
+  const { colors, mode, setTheme } = useTheme();
   const insets = useSafeAreaInsets();
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -210,6 +249,20 @@ export default function PerfilScreen() {
         </>
       )}
 
+      <View style={styles.settingsSection}>
+        <Text style={[styles.sectionTitle, { color: colors.heading }]}>Configurações</Text>
+        <View
+          style={[
+            styles.settingRow,
+            { backgroundColor: colors.surface, borderColor: colors.border },
+          ]}
+        >
+          <Ionicons name="color-palette-outline" size={19} color={colors.text} />
+          <Text style={[styles.settingLabel, { color: colors.text }]}>Tema</Text>
+          <ThemeSwitch mode={mode} setTheme={setTheme} colors={colors} />
+        </View>
+      </View>
+
       <Pressable
         style={[styles.logoutButton, { borderColor: colors.border }]}
         onPress={logout}
@@ -311,6 +364,34 @@ const styles = StyleSheet.create({
   },
   achievementFill: { height: '100%', borderRadius: 999 },
   achievementCount: { fontSize: 11, fontWeight: '700' },
+  settingsSection: { gap: 10 },
+  settingRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    borderWidth: 1,
+    borderRadius: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+  },
+  settingLabel: { flex: 1, fontSize: 15, fontWeight: '600' },
+  themeSwitch: {
+    flexDirection: 'row',
+    borderRadius: 12,
+    padding: 3,
+    gap: 3,
+  },
+  themeOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    borderRadius: 9,
+    borderWidth: 1,
+    borderColor: 'transparent',
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+  },
+  themeLabel: { fontSize: 12.5, fontWeight: '700' },
   logoutButton: {
     flexDirection: 'row',
     alignItems: 'center',

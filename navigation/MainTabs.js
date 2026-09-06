@@ -4,7 +4,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '../context/ThemeContext';
 import HomeScreen from '../screens/HomeScreen';
 import PerfilScreen from '../screens/PerfilScreen';
-import SettingsScreen from '../screens/SettingsScreen';
 import LivrosStack from './LivrosStack';
 import MidiasStack from './MidiasStack';
 
@@ -15,7 +14,6 @@ const ICONS = {
   Livros: 'book',
   Mídias: 'film',
   Perfil: 'person',
-  Configurações: 'settings',
 };
 
 export default function MainTabs() {
@@ -37,6 +35,7 @@ export default function MainTabs() {
           height: 64,
           paddingTop: 0,
           paddingBottom: 0,
+          paddingHorizontal: 16,
           borderRadius: 32,
           borderTopWidth: 0,
           backgroundColor: colors.surface,
@@ -64,7 +63,6 @@ export default function MainTabs() {
       <Tab.Screen name="Livros" component={LivrosStack} />
       <Tab.Screen name="Mídias" component={MidiasStack} />
       <Tab.Screen name="Perfil" component={PerfilScreen} />
-      <Tab.Screen name="Configurações" component={SettingsScreen} />
     </Tab.Navigator>
   );
 }
