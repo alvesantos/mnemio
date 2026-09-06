@@ -16,7 +16,6 @@ const palettes = {
     tabInactive: 'rgba(29, 51, 87, 0.35)',
     accent: '#8FA98A',
     danger: '#d93025',
-    systemBar: '#FFFFFF',
   },
   dark: {
     mode: 'dark',
@@ -30,7 +29,6 @@ const palettes = {
     tabInactive: 'rgba(246, 244, 239, 0.4)',
     accent: '#8FA98A',
     danger: '#ff6b5e',
-    systemBar: '#000000',
   },
 };
 

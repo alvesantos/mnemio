@@ -27,7 +27,7 @@ export default function MainTabs() {
         tabBarShowLabel: false,
         tabBarActiveTintColor: colors.tabActive,
         tabBarInactiveTintColor: colors.tabInactive,
-        tabBarStyle: { backgroundColor: colors.systemBar, borderTopColor: colors.border },
+        tabBarStyle: { backgroundColor: colors.background, borderTopColor: colors.border },
         tabBarIcon: ({ color, size }) => (
           <Ionicons name={ICONS[route.name]} color={color} size={size} />
         ),

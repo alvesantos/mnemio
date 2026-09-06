@@ -36,7 +36,7 @@ function Root() {
       </NavigationContainer>
       <View
         pointerEvents="none"
-        style={[styles.systemBarOverlay, { height: insets.top, backgroundColor: colors.systemBar }]}
+        style={[styles.systemBarOverlay, { height: insets.top, backgroundColor: colors.background }]}
       />
       <StatusBar style={mode === 'dark' ? 'light' : 'dark'} />
     </>
