@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAuth } from '../context/AuthContext';
 import { animesApi, filmesApi, livrosApi, seriesApi } from '../resources';
@@ -46,8 +46,17 @@ export default function HomeScreen({ navigation }) {
       style={styles.container}
       contentContainerStyle={[styles.content, { paddingTop: insets.top + 24 }]}
     >
-      <Text style={styles.greeting}>{getGreeting()},</Text>
-      <Text style={styles.name}>{user?.name}</Text>
+      <View style={styles.header}>
+        <View>
+          <Text style={styles.greeting}>{getGreeting()},</Text>
+          <Text style={styles.name}>{user?.name}</Text>
+        </View>
+        <Image
+          source={require('../assets/icons/icon_mnemio_dark.webp')}
+          style={styles.logo}
+          resizeMode="contain"
+        />
+      </View>
 
       <Text style={styles.sectionTitle}>Suas coleções</Text>
       <View style={styles.grid}>
@@ -74,6 +83,16 @@ const styles = StyleSheet.create({
   content: {
     padding: 24,
   },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 24,
+  },
+  logo: {
+    width: 36,
+    height: 36,
+  },
   greeting: {
     fontSize: 16,
     color: '#666',
@@ -82,7 +101,6 @@ const styles = StyleSheet.create({
     fontSize: 26,
     fontWeight: '700',
     color: '#1a1f3d',
-    marginBottom: 24,
   },
   sectionTitle: {
     fontSize: 15,
