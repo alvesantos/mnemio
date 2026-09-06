@@ -3,6 +3,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import { animesApi, filmesApi, livrosApi, seriesApi } from '../resources';
 
 function getGreeting() {
@@ -23,6 +24,7 @@ export default function HomeScreen({ navigation }) {
   const { user } = useAuth();
   const [counts, setCounts] = useState({});
   const insets = useSafeAreaInsets();
+  const { colors } = useTheme();
 
   useFocusEffect(
     useCallback(() => {
@@ -43,31 +45,33 @@ export default function HomeScreen({ navigation }) {
 
   return (
     <ScrollView
-      style={styles.container}
+      style={[styles.container, { backgroundColor: colors.background }]}
       contentContainerStyle={[styles.content, { paddingTop: insets.top + 24 }]}
     >
       <View style={styles.header}>
         <View>
-          <Text style={styles.greeting}>{getGreeting()},</Text>
-          <Text style={styles.name}>{user?.name}</Text>
+          <Text style={[styles.greeting, { color: colors.textMuted }]}>{getGreeting()},</Text>
+          <Text style={[styles.name, { color: colors.heading }]}>{user?.name}</Text>
         </View>
         <Image
-          source={require('../assets/icons/icon_mnemio_dark.webp')}
+          source={require('../assets/icons/mn_mnemio_logo_dark.webp')}
           style={styles.logo}
           resizeMode="contain"
         />
       </View>
 
-      <Text style={styles.sectionTitle}>Suas coleções</Text>
+      <Text style={[styles.sectionTitle, { color: colors.text }]}>Suas coleções</Text>
       <View style={styles.grid}>
         {COLLECTIONS.map((collection) => (
           <Pressable
             key={collection.key}
-            style={styles.card}
+            style={[styles.card, { backgroundColor: colors.surface }]}
             onPress={() => navigation.navigate(collection.tab)}
           >
-            <Text style={styles.cardCount}>{counts[collection.key] ?? '–'}</Text>
-            <Text style={styles.cardLabel}>{collection.label}</Text>
+            <Text style={[styles.cardCount, { color: colors.heading }]}>
+              {counts[collection.key] ?? '–'}
+            </Text>
+            <Text style={[styles.cardLabel, { color: colors.textMuted }]}>{collection.label}</Text>
           </Pressable>
         ))}
       </View>
@@ -90,8 +94,8 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   logo: {
-    width: 36,
-    height: 36,
+    width: 72,
+    height: 72,
   },
   greeting: {
     fontSize: 16,
