@@ -21,11 +21,20 @@ export default function MidiasScreen({ navigation }) {
       <SegmentedControl options={OPTIONS} value={activeType} onChange={setActiveType} />
       <CollectionListScreen
         key={activeType}
+        type={activeType}
         resourceApi={config.api}
         itemLabel={config.label}
         emptyLabel={`Nenhum(a) ${config.pluralLabel.toLowerCase()} cadastrado(a) ainda. Toca no + pra adicionar.`}
         onAddPress={() => navigation.navigate('MidiaForm', { type: activeType, item: null })}
         onEditPress={(item) => navigation.navigate('MidiaForm', { type: activeType, item })}
+        onDetailPress={(item) =>
+          navigation.navigate('MidiaDetail', {
+            type: activeType,
+            id: item.id,
+            item,
+            editRoute: 'MidiaForm',
+          })
+        }
       />
     </View>
   );

@@ -2,6 +2,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useTheme } from '../context/ThemeContext';
 import LivrosListScreen from '../screens/livros/LivrosListScreen';
 import LivroFormScreen from '../screens/livros/LivroFormScreen';
+import MediaDetailScreen from '../screens/MediaDetailScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -24,6 +25,7 @@ export default function LivrosStack() {
         component={LivroFormScreen}
         options={({ route }) => ({ title: route.params?.item ? 'Editar livro' : 'Novo livro' })}
       />
+      <Stack.Screen name="LivroDetail" component={MediaDetailScreen} options={{ title: 'Livro' }} />
     </Stack.Navigator>
   );
 }

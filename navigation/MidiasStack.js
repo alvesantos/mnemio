@@ -2,6 +2,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useTheme } from '../context/ThemeContext';
 import MidiasScreen from '../screens/midias/MidiasScreen';
 import MidiaFormScreen from '../screens/midias/MidiaFormScreen';
+import MediaDetailScreen from '../screens/MediaDetailScreen';
 import { MIDIA_TYPES } from '../screens/midias/midiaTypes';
 
 const Stack = createNativeStackNavigator();
@@ -25,9 +26,14 @@ export default function MidiasStack() {
         component={MidiaFormScreen}
         options={({ route }) => {
           const config = MIDIA_TYPES[route.params.type];
-          return { title: route.params.item ? `Editar ${config.label.toLowerCase()}` : `Novo(a) ${config.label.toLowerCase()}` };
+          return {
+            title: route.params.item
+              ? `Editar ${config.label.toLowerCase()}`
+              : `Novo(a) ${config.label.toLowerCase()}`,
+          };
         }}
       />
+      <Stack.Screen name="MidiaDetail" component={MediaDetailScreen} options={{ title: 'Detalhe' }} />
     </Stack.Navigator>
   );
 }
