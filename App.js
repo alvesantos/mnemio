@@ -4,8 +4,10 @@ import { useEffect } from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as NavigationBar from 'expo-navigation-bar';
+import AchievementToast from './components/AchievementToast';
 import { AuthProvider } from './context/AuthContext';
 import { ThemeProvider, useTheme } from './context/ThemeContext';
+import { ToastProvider } from './context/ToastContext';
 import RootNavigator from './navigation/RootNavigator';
 
 function Root() {
@@ -38,6 +40,8 @@ function Root() {
         pointerEvents="none"
         style={[styles.systemBarOverlay, { height: insets.top, backgroundColor: colors.background }]}
       />
+      {/* Fora do NavigationContainer para flutuar sobre qualquer tela. */}
+      <AchievementToast />
       <StatusBar style={mode === 'dark' ? 'light' : 'dark'} />
     </>
   );
@@ -47,9 +51,11 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <ThemeProvider>
-        <AuthProvider>
-          <Root />
-        </AuthProvider>
+        <ToastProvider>
+          <AuthProvider>
+            <Root />
+          </AuthProvider>
+        </ToastProvider>
       </ThemeProvider>
     </SafeAreaProvider>
   );
