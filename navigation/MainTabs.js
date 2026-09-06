@@ -51,6 +51,10 @@ export default function MainTabs() {
           alignItems: 'center',
           justifyContent: 'center',
         },
+        tabBarIconStyle: {
+          height: '100%',
+          marginTop: 0,
+        },
         tabBarIcon: ({ color, size }) => (
           <Ionicons name={ICONS[route.name]} color={color} size={size} />
         ),
