@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
 import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAuth } from '../context/AuthContext';
@@ -14,10 +15,10 @@ function getGreeting() {
 }
 
 const COLLECTIONS = [
-  { key: 'livros', label: 'Livros', api: livrosApi, tab: 'Livros' },
-  { key: 'series', label: 'Séries', api: seriesApi, tab: 'Mídias' },
-  { key: 'filmes', label: 'Filmes', api: filmesApi, tab: 'Mídias' },
-  { key: 'animes', label: 'Animes', api: animesApi, tab: 'Mídias' },
+  { key: 'livros', label: 'Livros', api: livrosApi, tab: 'Livros', icon: 'book', accent: '#6C63FF' },
+  { key: 'series', label: 'Séries', api: seriesApi, tab: 'Mídias', icon: 'tv', accent: '#00B8A9' },
+  { key: 'filmes', label: 'Filmes', api: filmesApi, tab: 'Mídias', icon: 'film', accent: '#FF6B6B' },
+  { key: 'animes', label: 'Animes', api: animesApi, tab: 'Mídias', icon: 'sparkles', accent: '#FFA94D' },
 ];
 
 export default function HomeScreen({ navigation }) {
@@ -25,6 +26,10 @@ export default function HomeScreen({ navigation }) {
   const [counts, setCounts] = useState({});
   const insets = useSafeAreaInsets();
   const { colors } = useTheme();
+
+  const hasLoaded = Object.keys(counts).length === COLLECTIONS.length;
+  const totalItems = Object.values(counts).reduce((sum, count) => sum + count, 0);
+  const isEmpty = hasLoaded && totalItems === 0;
 
   useFocusEffect(
     useCallback(() => {
@@ -60,6 +65,18 @@ export default function HomeScreen({ navigation }) {
         />
       </View>
 
+      {isEmpty && (
+        <View style={[styles.continueCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+          <Ionicons name="compass-outline" size={22} color={colors.heading} />
+          <View style={styles.continueTextWrap}>
+            <Text style={[styles.continueTitle, { color: colors.text }]}>Continue de onde parou</Text>
+            <Text style={[styles.continueSubtitle, { color: colors.textMuted }]}>
+              Parece que você ainda não adicionou nada por aqui. Que tal começar sua coleção agora?
+            </Text>
+          </View>
+        </View>
+      )}
+
       <Text style={[styles.sectionTitle, { color: colors.text }]}>Suas coleções</Text>
       <View style={styles.grid}>
         {COLLECTIONS.map((collection) => (
@@ -68,6 +85,9 @@ export default function HomeScreen({ navigation }) {
             style={[styles.card, { backgroundColor: colors.surface }]}
             onPress={() => navigation.navigate(collection.tab)}
           >
+            <View style={[styles.cardBadge, { backgroundColor: colors.background }]}>
+              <Ionicons name={collection.icon} size={18} color={collection.accent} />
+            </View>
             <Text style={[styles.cardCount, { color: colors.heading }]}>
               {counts[collection.key] ?? '–'}
             </Text>
@@ -112,6 +132,27 @@ const styles = StyleSheet.create({
     color: '#1f1f1f',
     marginBottom: 12,
   },
+  continueCard: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    borderWidth: 1,
+    borderRadius: 14,
+    padding: 16,
+    marginBottom: 24,
+  },
+  continueTextWrap: {
+    flex: 1,
+    marginLeft: 12,
+  },
+  continueTitle: {
+    fontSize: 15,
+    fontWeight: '600',
+    marginBottom: 4,
+  },
+  continueSubtitle: {
+    fontSize: 13,
+    lineHeight: 18,
+  },
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -123,6 +164,14 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     paddingVertical: 20,
     paddingHorizontal: 16,
+  },
+  cardBadge: {
+    width: 36,
+    height: 36,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 12,
   },
   cardCount: {
     fontSize: 24,
