@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import {
   ActivityIndicator,
+  Image,
   KeyboardAvoidingView,
   Platform,
   Pressable,
   StyleSheet,
   Text,
   TextInput,
-  View,
 } from 'react-native';
 import { useAuth } from '../context/AuthContext';
 
@@ -48,9 +48,12 @@ export default function RegisterScreen({ navigation }) {
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <View style={styles.logoPlaceholder}>
-        <Text style={styles.logoPlaceholderText}>LOGO</Text>
-      </View>
+      <Image
+        source={require('../assets/icons/mn_mnemio_logo_dark.webp')}
+        style={styles.logo}
+        resizeMode="contain"
+        accessibilityLabel="Mnemio"
+      />
 
       <Text style={styles.title}>Criar conta</Text>
 
@@ -103,21 +106,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 24,
   },
-  logoPlaceholder: {
-    width: 120,
-    height: 120,
-    borderRadius: 24,
-    borderWidth: 2,
-    borderColor: '#d0d0d0',
-    borderStyle: 'dashed',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 32,
-  },
-  logoPlaceholderText: {
-    color: '#a0a0a0',
-    fontWeight: '600',
-    letterSpacing: 1,
+  logo: {
+    width: 190,
+    height: 190,
+    marginBottom: 8,
   },
   title: {
     fontSize: 22,
