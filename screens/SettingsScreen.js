@@ -1,5 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '../context/ThemeContext';
 
 const OPTIONS = [
@@ -9,9 +10,11 @@ const OPTIONS = [
 
 export default function SettingsScreen() {
   const { mode, colors, setTheme } = useTheme();
+  const insets = useSafeAreaInsets();
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <View style={[styles.container, { backgroundColor: colors.background, paddingTop: insets.top + 24 }]}>
+      <Text style={[styles.pageTitle, { color: colors.heading }]}>Configurações</Text>
       <Text style={[styles.sectionTitle, { color: colors.text }]}>Tema</Text>
 
       {OPTIONS.map((option) => {
@@ -38,7 +41,12 @@ export default function SettingsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 24,
+    paddingHorizontal: 24,
+  },
+  pageTitle: {
+    fontSize: 26,
+    fontWeight: '700',
+    marginBottom: 24,
   },
   sectionTitle: {
     fontSize: 15,

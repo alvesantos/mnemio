@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAuth } from '../context/AuthContext';
@@ -15,17 +16,45 @@ function getGreeting() {
 }
 
 const COLLECTIONS = [
-  { key: 'livros', label: 'Livros', api: livrosApi, tab: 'Livros', icon: 'book', accent: '#6C63FF' },
-  { key: 'series', label: 'Séries', api: seriesApi, tab: 'Mídias', icon: 'tv', accent: '#00B8A9' },
-  { key: 'filmes', label: 'Filmes', api: filmesApi, tab: 'Mídias', icon: 'film', accent: '#FF6B6B' },
-  { key: 'animes', label: 'Animes', api: animesApi, tab: 'Mídias', icon: 'sparkles', accent: '#FFA94D' },
+  {
+    key: 'livros',
+    label: 'Livros',
+    api: livrosApi,
+    tab: 'Livros',
+    icon: 'book',
+    gradient: ['#7C6CFF', '#4B36D9'],
+  },
+  {
+    key: 'series',
+    label: 'Séries',
+    api: seriesApi,
+    tab: 'Mídias',
+    icon: 'tv',
+    gradient: ['#12D6C4', '#0C8F91'],
+  },
+  {
+    key: 'filmes',
+    label: 'Filmes',
+    api: filmesApi,
+    tab: 'Mídias',
+    icon: 'film',
+    gradient: ['#FF7A7A', '#D93D5A'],
+  },
+  {
+    key: 'animes',
+    label: 'Animes',
+    api: animesApi,
+    tab: 'Mídias',
+    icon: 'sparkles',
+    gradient: ['#FFB84D', '#F76B1C'],
+  },
 ];
 
 export default function HomeScreen({ navigation }) {
   const { user } = useAuth();
   const [counts, setCounts] = useState({});
   const insets = useSafeAreaInsets();
-  const { colors } = useTheme();
+  const { mode, colors } = useTheme();
 
   const hasLoaded = Object.keys(counts).length === COLLECTIONS.length;
   const totalItems = Object.values(counts).reduce((sum, count) => sum + count, 0);
@@ -59,7 +88,11 @@ export default function HomeScreen({ navigation }) {
           <Text style={[styles.name, { color: colors.heading }]}>{user?.name}</Text>
         </View>
         <Image
-          source={require('../assets/icons/mn_mnemio_logo_dark.webp')}
+          source={
+            mode === 'dark'
+              ? require('../assets/icons/mn_mnemio_logo_light.webp')
+              : require('../assets/icons/mn_mnemio_logo_dark.webp')
+          }
           style={styles.logo}
           resizeMode="contain"
         />
@@ -82,16 +115,27 @@ export default function HomeScreen({ navigation }) {
         {COLLECTIONS.map((collection) => (
           <Pressable
             key={collection.key}
-            style={[styles.card, { backgroundColor: colors.surface }]}
+            style={({ pressed }) => [styles.cardShadow, pressed && styles.cardPressed]}
             onPress={() => navigation.navigate(collection.tab)}
           >
-            <View style={[styles.cardBadge, { backgroundColor: colors.background }]}>
-              <Ionicons name={collection.icon} size={18} color={collection.accent} />
-            </View>
-            <Text style={[styles.cardCount, { color: colors.heading }]}>
-              {counts[collection.key] ?? '–'}
-            </Text>
-            <Text style={[styles.cardLabel, { color: colors.textMuted }]}>{collection.label}</Text>
+            <LinearGradient
+              colors={collection.gradient}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.card}
+            >
+              <Ionicons
+                name={collection.icon}
+                size={88}
+                color="rgba(255,255,255,0.16)"
+                style={styles.cardGhostIcon}
+              />
+              <View style={styles.cardBadge}>
+                <Ionicons name={collection.icon} size={20} color="#fff" />
+              </View>
+              <Text style={styles.cardCount}>{counts[collection.key] ?? '–'}</Text>
+              <Text style={styles.cardLabel}>{collection.label}</Text>
+            </LinearGradient>
           </Pressable>
         ))}
       </View>
@@ -159,28 +203,50 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   card: {
-    width: '47%',
-    backgroundColor: '#f7f7f8',
-    borderRadius: 14,
+    width: '100%',
+    minHeight: 140,
+    borderRadius: 24,
     paddingVertical: 20,
-    paddingHorizontal: 16,
+    paddingHorizontal: 20,
+    overflow: 'hidden',
+  },
+  cardShadow: {
+    width: '47%',
+    borderRadius: 24,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.18,
+    shadowRadius: 14,
+    elevation: 6,
+  },
+  cardPressed: {
+    opacity: 0.85,
+    transform: [{ scale: 0.98 }],
+  },
+  cardGhostIcon: {
+    position: 'absolute',
+    right: -14,
+    bottom: -14,
+    transform: [{ rotate: '-12deg' }],
   },
   cardBadge: {
-    width: 36,
-    height: 36,
-    borderRadius: 10,
+    width: 40,
+    height: 40,
+    borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 12,
+    backgroundColor: 'rgba(255,255,255,0.22)',
+    marginBottom: 20,
   },
   cardCount: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: '#1a1f3d',
+    fontSize: 28,
+    fontWeight: '800',
+    color: '#fff',
   },
   cardLabel: {
     fontSize: 13,
-    color: '#666',
-    marginTop: 4,
+    fontWeight: '600',
+    color: 'rgba(255,255,255,0.85)',
+    marginTop: 2,
   },
 });

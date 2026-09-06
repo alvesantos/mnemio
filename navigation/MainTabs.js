@@ -2,9 +2,10 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../context/ThemeContext';
 import HomeScreen from '../screens/HomeScreen';
+import PerfilScreen from '../screens/PerfilScreen';
+import SettingsScreen from '../screens/SettingsScreen';
 import LivrosStack from './LivrosStack';
 import MidiasStack from './MidiasStack';
-import PerfilStack from './PerfilStack';
 
 const Tab = createBottomTabNavigator();
 
@@ -13,6 +14,7 @@ const ICONS = {
   Livros: 'book',
   Mídias: 'film',
   Perfil: 'person',
+  Configurações: 'settings',
 };
 
 export default function MainTabs() {
@@ -33,7 +35,8 @@ export default function MainTabs() {
       <Tab.Screen name="Início" component={HomeScreen} />
       <Tab.Screen name="Livros" component={LivrosStack} />
       <Tab.Screen name="Mídias" component={MidiasStack} />
-      <Tab.Screen name="Perfil" component={PerfilStack} />
+      <Tab.Screen name="Perfil" component={PerfilScreen} />
+      <Tab.Screen name="Configurações" component={SettingsScreen} />
     </Tab.Navigator>
   );
 }

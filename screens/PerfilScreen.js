@@ -1,9 +1,8 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 
-export default function PerfilScreen({ navigation }) {
+export default function PerfilScreen() {
   const { user, logout } = useAuth();
   const { colors } = useTheme();
 
@@ -14,14 +13,6 @@ export default function PerfilScreen({ navigation }) {
       </View>
       <Text style={[styles.name, { color: colors.text }]}>{user?.name}</Text>
       <Text style={[styles.email, { color: colors.textMuted }]}>{user?.email}</Text>
-
-      <Pressable
-        style={[styles.settingsButton, { backgroundColor: colors.surface, borderColor: colors.border }]}
-        onPress={() => navigation.navigate('Settings')}
-      >
-        <Ionicons name="settings-outline" size={18} color={colors.text} style={styles.settingsIcon} />
-        <Text style={[styles.settingsText, { color: colors.text }]}>Configurações</Text>
-      </Pressable>
 
       <Pressable style={styles.logoutButton} onPress={logout}>
         <Text style={styles.logoutText}>Sair</Text>
@@ -61,21 +52,6 @@ const styles = StyleSheet.create({
     color: '#666',
     marginTop: 4,
     marginBottom: 32,
-  },
-  settingsButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingVertical: 10,
-    paddingHorizontal: 24,
-    marginBottom: 12,
-  },
-  settingsIcon: {
-    marginRight: 8,
-  },
-  settingsText: {
-    fontWeight: '600',
   },
   logoutButton: {
     borderWidth: 1,
