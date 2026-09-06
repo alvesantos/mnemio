@@ -122,6 +122,7 @@ export default function CollectionListScreen({
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
+        style={styles.filtersWrap}
         contentContainerStyle={styles.filters}
       >
         {FILTERS.map((option) => {
@@ -213,7 +214,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  // flexGrow 0 impede o ScrollView de ocupar a sobra vertical do container
+  // flex:1; alignItems center impede os chips de esticarem na altura, que e
+  // o padrao (stretch) num ScrollView horizontal.
+  filtersWrap: {
+    flexGrow: 0,
+    flexShrink: 0,
+  },
   filters: {
+    alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 12,
     gap: 8,
