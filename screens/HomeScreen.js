@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAuth } from '../context/AuthContext';
 import { animesApi, filmesApi, livrosApi, seriesApi } from '../resources';
 
@@ -21,6 +22,7 @@ const COLLECTIONS = [
 export default function HomeScreen({ navigation }) {
   const { user } = useAuth();
   const [counts, setCounts] = useState({});
+  const insets = useSafeAreaInsets();
 
   useFocusEffect(
     useCallback(() => {
@@ -40,7 +42,10 @@ export default function HomeScreen({ navigation }) {
   );
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={[styles.content, { paddingTop: insets.top + 24 }]}
+    >
       <Text style={styles.greeting}>{getGreeting()},</Text>
       <Text style={styles.name}>{user?.name}</Text>
 
