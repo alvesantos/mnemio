@@ -24,9 +24,10 @@ export default function MainTabs() {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
+        tabBarShowLabel: false,
         tabBarActiveTintColor: colors.tabActive,
         tabBarInactiveTintColor: colors.tabInactive,
-        tabBarStyle: { backgroundColor: colors.background, borderTopColor: colors.border },
+        tabBarStyle: { backgroundColor: colors.systemBar, borderTopColor: colors.border },
         tabBarIcon: ({ color, size }) => (
           <Ionicons name={ICONS[route.name]} color={color} size={size} />
         ),
