@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import CollectionListScreen from '../../components/CollectionListScreen';
 import SegmentedControl from '../../components/SegmentedControl';
+import { useTheme } from '../../context/ThemeContext';
 import { MIDIA_TYPES } from './midiaTypes';
 
 const OPTIONS = [
@@ -13,9 +14,10 @@ const OPTIONS = [
 export default function MidiasScreen({ navigation }) {
   const [activeType, setActiveType] = useState('series');
   const config = MIDIA_TYPES[activeType];
+  const { colors } = useTheme();
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <SegmentedControl options={OPTIONS} value={activeType} onChange={setActiveType} />
       <CollectionListScreen
         key={activeType}
@@ -32,6 +34,5 @@ export default function MidiasScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
   },
 });

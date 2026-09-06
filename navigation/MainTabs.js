@@ -1,5 +1,6 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '../context/ThemeContext';
 import HomeScreen from '../screens/HomeScreen';
 import PerfilScreen from '../screens/PerfilScreen';
@@ -19,6 +20,7 @@ const ICONS = {
 
 export default function MainTabs() {
   const { colors } = useTheme();
+  const insets = useSafeAreaInsets();
 
   return (
     <Tab.Navigator
@@ -27,7 +29,28 @@ export default function MainTabs() {
         tabBarShowLabel: false,
         tabBarActiveTintColor: colors.tabActive,
         tabBarInactiveTintColor: colors.tabInactive,
-        tabBarStyle: { backgroundColor: colors.background, borderTopColor: colors.border },
+        tabBarStyle: {
+          position: 'absolute',
+          left: 24,
+          right: 24,
+          bottom: insets.bottom + 16,
+          height: 64,
+          paddingTop: 0,
+          paddingBottom: 0,
+          borderRadius: 32,
+          borderTopWidth: 0,
+          backgroundColor: colors.surface,
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 8 },
+          shadowOpacity: 0.18,
+          shadowRadius: 16,
+          elevation: 10,
+        },
+        tabBarItemStyle: {
+          height: 64,
+          alignItems: 'center',
+          justifyContent: 'center',
+        },
         tabBarIcon: ({ color, size }) => (
           <Ionicons name={ICONS[route.name]} color={color} size={size} />
         ),

@@ -1,17 +1,22 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { useTheme } from '../context/ThemeContext';
 
 export default function SegmentedControl({ options, value, onChange }) {
+  const { colors } = useTheme();
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.border }]}>
       {options.map((option) => {
         const active = option.value === value;
         return (
           <Pressable
             key={option.value}
-            style={[styles.segment, active && styles.segmentActive]}
+            style={[styles.segment, active && [styles.segmentActive, { backgroundColor: colors.surface }]]}
             onPress={() => onChange(option.value)}
           >
-            <Text style={[styles.label, active && styles.labelActive]}>{option.label}</Text>
+            <Text style={[styles.label, { color: active ? colors.heading : colors.textMuted }]}>
+              {option.label}
+            </Text>
           </Pressable>
         );
       })}
@@ -22,7 +27,6 @@ export default function SegmentedControl({ options, value, onChange }) {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    backgroundColor: '#f0f0f0',
     borderRadius: 10,
     padding: 4,
     margin: 16,
@@ -34,7 +38,6 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   segmentActive: {
-    backgroundColor: '#fff',
     elevation: 1,
     shadowColor: '#000',
     shadowOpacity: 0.08,
@@ -43,10 +46,6 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 13,
-    color: '#666',
     fontWeight: '500',
-  },
-  labelActive: {
-    color: '#1a1f3d',
   },
 });

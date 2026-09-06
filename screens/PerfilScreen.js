@@ -1,13 +1,15 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 
 export default function PerfilScreen() {
   const { user, logout } = useAuth();
   const { colors } = useTheme();
+  const insets = useSafeAreaInsets();
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <View style={[styles.container, { backgroundColor: colors.background, paddingBottom: insets.bottom + 100 }]}>
       <View style={styles.avatar}>
         <Text style={styles.avatarText}>{user?.name?.[0]?.toUpperCase()}</Text>
       </View>

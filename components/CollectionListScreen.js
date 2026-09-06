@@ -10,6 +10,8 @@ import {
   Text,
   View,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTheme } from '../context/ThemeContext';
 import StarRating from './StarRating';
 
 export default function CollectionListScreen({
@@ -23,6 +25,8 @@ export default function CollectionListScreen({
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState(null);
+  const insets = useSafeAreaInsets();
+  const { colors } = useTheme();
 
   const load = useCallback(async () => {
     try {
@@ -62,20 +66,23 @@ export default function CollectionListScreen({
 
   if (loading) {
     return (
-      <View style={styles.center}>
-        <ActivityIndicator />
+      <View style={[styles.center, { backgroundColor: colors.background }]}>
+        <ActivityIndicator color={colors.heading} />
       </View>
     );
   }
 
   return (
-    <View style={styles.container}>
-      {error && <Text style={styles.error}>{error}</Text>}
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      {error && <Text style={[styles.error, { color: colors.danger }]}>{error}</Text>}
 
       <FlatList
         data={items}
         keyExtractor={(item) => String(item.id)}
-        contentContainerStyle={items.length === 0 && styles.emptyContainer}
+        contentContainerStyle={[
+          { paddingBottom: insets.bottom + 100 },
+          items.length === 0 && styles.emptyContainer,
+        ]}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -83,13 +90,17 @@ export default function CollectionListScreen({
               setRefreshing(true);
               load();
             }}
+            tintColor={colors.heading}
           />
         }
-        ListEmptyComponent={<Text style={styles.empty}>{emptyLabel}</Text>}
+        ListEmptyComponent={<Text style={[styles.empty, { color: colors.textMuted }]}>{emptyLabel}</Text>}
         renderItem={({ item }) => (
-          <Pressable style={styles.row} onPress={() => onEditPress(item)}>
+          <Pressable
+            style={[styles.row, { borderBottomColor: colors.border }]}
+            onPress={() => onEditPress(item)}
+          >
             <View style={styles.rowMain}>
-              <Text style={styles.title}>{item.title}</Text>
+              <Text style={[styles.title, { color: colors.text }]}>{item.title}</Text>
               <StarRating value={item.rating} readOnly size={14} />
             </View>
             <Pressable
@@ -97,14 +108,17 @@ export default function CollectionListScreen({
               hitSlop={8}
               style={styles.deleteButton}
             >
-              <Text style={styles.deleteText}>Excluir</Text>
+              <Text style={[styles.deleteText, { color: colors.danger }]}>Excluir</Text>
             </Pressable>
           </Pressable>
         )}
       />
 
-      <Pressable style={styles.fab} onPress={onAddPress}>
-        <Text style={styles.fabText}>+</Text>
+      <Pressable
+        style={[styles.fab, { bottom: insets.bottom + 96, backgroundColor: colors.heading }]}
+        onPress={onAddPress}
+      >
+        <Text style={[styles.fabText, { color: colors.background }]}>+</Text>
       </Pressable>
     </View>
   );

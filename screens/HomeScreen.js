@@ -80,7 +80,7 @@ export default function HomeScreen({ navigation }) {
   return (
     <ScrollView
       style={[styles.container, { backgroundColor: colors.background }]}
-      contentContainerStyle={[styles.content, { paddingTop: insets.top + 24 }]}
+      contentContainerStyle={[styles.content, { paddingTop: insets.top + 24, paddingBottom: insets.bottom + 100 }]}
     >
       <View style={styles.header}>
         <View>

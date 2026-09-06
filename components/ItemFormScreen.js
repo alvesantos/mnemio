@@ -9,6 +9,7 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import { useTheme } from '../context/ThemeContext';
 import StarRating from './StarRating';
 
 function getErrorMessage(err) {
@@ -21,6 +22,7 @@ export default function ItemFormScreen({ initialItem, itemLabel, onSubmit, onCan
   const [rating, setRating] = useState(initialItem?.rating ?? null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
+  const { colors } = useTheme();
 
   async function handleSubmit() {
     if (!title.trim()) {
@@ -39,33 +41,39 @@ export default function ItemFormScreen({ initialItem, itemLabel, onSubmit, onCan
 
   return (
     <KeyboardAvoidingView
-      style={styles.container}
+      style={[styles.container, { backgroundColor: colors.background }]}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <Text style={styles.label}>Título</Text>
+      <Text style={[styles.label, { color: colors.textMuted }]}>Título</Text>
       <TextInput
-        style={styles.input}
+        style={[styles.input, { borderColor: colors.border, color: colors.text }]}
         placeholder={`Nome do ${itemLabel.toLowerCase()}`}
-        placeholderTextColor="#999"
+        placeholderTextColor={colors.textMuted}
         value={title}
         onChangeText={setTitle}
         autoFocus
       />
 
-      <Text style={styles.label}>Nota</Text>
+      <Text style={[styles.label, { color: colors.textMuted }]}>Nota</Text>
       <StarRating value={rating} onChange={setRating} size={28} />
 
-      {error && <Text style={styles.error}>{error}</Text>}
+      {error && <Text style={[styles.error, { color: colors.danger }]}>{error}</Text>}
 
       <View style={styles.actions}>
         <Pressable style={styles.cancelButton} onPress={onCancel}>
-          <Text style={styles.cancelText}>Cancelar</Text>
+          <Text style={[styles.cancelText, { color: colors.textMuted }]}>Cancelar</Text>
         </Pressable>
-        <Pressable style={styles.saveButton} onPress={handleSubmit} disabled={saving}>
+        <Pressable
+          style={[styles.saveButton, { backgroundColor: colors.heading }]}
+          onPress={handleSubmit}
+          disabled={saving}
+        >
           {saving ? (
-            <ActivityIndicator color="#fff" />
+            <ActivityIndicator color={colors.background} />
           ) : (
-            <Text style={styles.saveText}>{isEditing ? 'Salvar' : 'Cadastrar'}</Text>
+            <Text style={[styles.saveText, { color: colors.background }]}>
+              {isEditing ? 'Salvar' : 'Cadastrar'}
+            </Text>
           )}
         </Pressable>
       </View>
