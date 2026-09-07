@@ -29,8 +29,9 @@ export default function MainTabs() {
         tabBarInactiveTintColor: colors.tabInactive,
         tabBarStyle: {
           position: 'absolute',
-          left: 24,
-          right: 24,
+          left: 0,
+          right: 0,
+          marginHorizontal: 24,
           bottom: insets.bottom + 16,
           height: 64,
           paddingTop: 0,
