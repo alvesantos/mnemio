@@ -54,6 +54,49 @@ function ThemeSwitch({ mode, setTheme, colors }) {
   );
 }
 
+function PaletteSwitch({ palette, palettes, setPalette, colors }) {
+  return (
+    <View style={styles.paletteRow}>
+      {palettes.map((option) => {
+        const selected = option.key === palette;
+        const [ink, accent] = option.swatch;
+        return (
+          <Pressable
+            key={option.key}
+            style={[
+              styles.paletteOption,
+              {
+                backgroundColor: colors.surfaceAlt,
+                borderColor: selected ? colors.heading : 'transparent',
+              },
+            ]}
+            onPress={() => setPalette(option.key)}
+            accessibilityRole="radio"
+            accessibilityState={{ selected }}
+            accessibilityLabel={`Paleta ${option.label}`}
+          >
+            <View style={styles.swatchWrap}>
+              <View style={[styles.swatch, { backgroundColor: ink }]} />
+              <View style={[styles.swatch, styles.swatchOverlap, { backgroundColor: accent }]} />
+            </View>
+            <Text
+              style={[
+                styles.paletteLabel,
+                { color: selected ? colors.heading : colors.textMuted },
+              ]}
+            >
+              {option.label}
+            </Text>
+            {selected && (
+              <Ionicons name="checkmark-circle" size={15} color={colors.heading} />
+            )}
+          </Pressable>
+        );
+      })}
+    </View>
+  );
+}
+
 function StatTile({ value, label, colors }) {
   return (
     <View style={[styles.statTile, { backgroundColor: colors.surface, borderColor: colors.border }]}>
@@ -124,7 +167,7 @@ function AchievementCard({ achievement, colors, accent }) {
 
 export default function PerfilScreen() {
   const { user, logout, deleteAccount } = useAuth();
-  const { colors, mode, setTheme } = useTheme();
+  const { colors, mode, setTheme, palette, palettes, setPalette } = useTheme();
   const insets = useSafeAreaInsets();
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -257,9 +300,27 @@ export default function PerfilScreen() {
             { backgroundColor: colors.surface, borderColor: colors.border },
           ]}
         >
-          <Ionicons name="color-palette-outline" size={19} color={colors.text} />
+          <Ionicons name="contrast-outline" size={19} color={colors.text} />
           <Text style={[styles.settingLabel, { color: colors.text }]}>Tema</Text>
           <ThemeSwitch mode={mode} setTheme={setTheme} colors={colors} />
+        </View>
+
+        <View
+          style={[
+            styles.settingBlock,
+            { backgroundColor: colors.surface, borderColor: colors.border },
+          ]}
+        >
+          <View style={styles.settingBlockHead}>
+            <Ionicons name="color-palette-outline" size={19} color={colors.text} />
+            <Text style={[styles.settingLabel, { color: colors.text }]}>Cores</Text>
+          </View>
+          <PaletteSwitch
+            palette={palette}
+            palettes={palettes}
+            setPalette={setPalette}
+            colors={colors}
+          />
         </View>
       </View>
 
@@ -375,6 +436,32 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
   },
   settingLabel: { flex: 1, fontSize: 15, fontWeight: '600' },
+  settingBlock: {
+    gap: 12,
+    borderWidth: 1,
+    borderRadius: 16,
+    paddingVertical: 14,
+    paddingHorizontal: 14,
+  },
+  settingBlockHead: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  paletteRow: { flexDirection: 'row', gap: 8 },
+  paletteOption: {
+    flex: 1,
+    alignItems: 'center',
+    gap: 6,
+    borderRadius: 13,
+    borderWidth: 1.5,
+    paddingVertical: 10,
+    paddingHorizontal: 6,
+  },
+  swatchWrap: { flexDirection: 'row', alignItems: 'center' },
+  swatch: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+  },
+  swatchOverlap: { marginLeft: -7 },
+  paletteLabel: { fontSize: 12.5, fontWeight: '700' },
   themeSwitch: {
     flexDirection: 'row',
     borderRadius: 12,

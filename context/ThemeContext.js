@@ -1,7 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 
-const STORAGE_KEY = 'mnemio:theme-mode';
+const MODE_KEY = 'mnemio:theme-mode';
+const PALETTE_KEY = 'mnemio:theme-palette';
 
 // Cores de status compartilhadas pelos dois temas: precisam ser legíveis
 // sobre fundo claro e escuro, então são tons médios saturados.
@@ -12,44 +13,107 @@ const statusPalette = {
   dropado: { color: '#C75C63', label: 'Dropado', icon: 'close-circle-outline' },
 };
 
-const palettes = {
-  light: {
-    mode: 'light',
-    background: '#F6F4EF',
-    surface: '#FFFFFF',
-    surfaceAlt: '#EFECE4',
-    border: '#E3DFD4',
-    text: '#1D3357',
-    textMuted: 'rgba(29, 51, 87, 0.6)',
-    textFaint: 'rgba(29, 51, 87, 0.38)',
-    heading: '#1D3357',
-    tabActive: '#1D3357',
-    tabInactive: 'rgba(29, 51, 87, 0.35)',
+// Cada família define só os tons "âncora": a tinta escura (usada como texto no
+// claro e como fundo no escuro), o papel claro e o accent. O resto é derivado
+// em buildPalette para os dois modos continuarem consistentes entre si.
+const families = {
+  azul: {
+    key: 'azul',
+    label: 'Azul',
+    ink: '#1D3357',
+    inkSurface: '#283D63',
+    inkSurfaceAlt: '#32406B',
+    paper: '#F6F4EF',
+    paperSurfaceAlt: '#EFECE4',
+    paperBorder: '#E3DFD4',
     accent: '#8FA98A',
-    danger: '#d93025',
-    track: 'rgba(29, 51, 87, 0.10)',
-    overlay: 'rgba(29, 51, 87, 0.45)',
-    shadowOpacity: 0.1,
   },
-  dark: {
-    mode: 'dark',
-    background: '#1D3357',
-    surface: '#283D63',
-    surfaceAlt: '#32406B',
-    border: 'rgba(246, 244, 239, 0.14)',
-    text: '#F6F4EF',
-    textMuted: 'rgba(246, 244, 239, 0.65)',
-    textFaint: 'rgba(246, 244, 239, 0.42)',
-    heading: '#F6F4EF',
-    tabActive: '#F6F4EF',
-    tabInactive: 'rgba(246, 244, 239, 0.4)',
-    accent: '#8FA98A',
-    danger: '#ff6b5e',
-    track: 'rgba(246, 244, 239, 0.14)',
-    overlay: 'rgba(9, 16, 30, 0.6)',
-    shadowOpacity: 0.3,
+  rosa: {
+    key: 'rosa',
+    label: 'Rosa',
+    ink: '#4A1F3D',
+    inkSurface: '#5E2B4E',
+    inkSurfaceAlt: '#6E3459',
+    paper: '#FBF3F5',
+    paperSurfaceAlt: '#F4E6EA',
+    paperBorder: '#EBD6DC',
+    accent: '#D96A9A',
+  },
+  laranja: {
+    key: 'laranja',
+    label: 'Laranja',
+    ink: '#4A2A17',
+    inkSurface: '#5E3720',
+    inkSurfaceAlt: '#6E4327',
+    paper: '#FDF4EC',
+    paperSurfaceAlt: '#F6E7D8',
+    paperBorder: '#EDD9C6',
+    accent: '#E8813C',
   },
 };
+
+const DEFAULT_PALETTE = 'azul';
+
+function rgba(hex, alpha) {
+  const value = hex.replace('#', '');
+  const r = parseInt(value.slice(0, 2), 16);
+  const g = parseInt(value.slice(2, 4), 16);
+  const b = parseInt(value.slice(4, 6), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
+function buildPalette(family, mode) {
+  const { ink, inkSurface, inkSurfaceAlt, paper, paperSurfaceAlt, paperBorder, accent } = family;
+
+  if (mode === 'dark') {
+    return {
+      mode: 'dark',
+      palette: family.key,
+      background: ink,
+      surface: inkSurface,
+      surfaceAlt: inkSurfaceAlt,
+      border: rgba(paper, 0.14),
+      text: paper,
+      textMuted: rgba(paper, 0.65),
+      textFaint: rgba(paper, 0.42),
+      heading: paper,
+      tabActive: paper,
+      tabInactive: rgba(paper, 0.4),
+      accent,
+      danger: '#ff6b5e',
+      track: rgba(paper, 0.14),
+      overlay: 'rgba(0, 0, 0, 0.55)',
+      shadowOpacity: 0.3,
+    };
+  }
+
+  return {
+    mode: 'light',
+    palette: family.key,
+    background: paper,
+    surface: '#FFFFFF',
+    surfaceAlt: paperSurfaceAlt,
+    border: paperBorder,
+    text: ink,
+    textMuted: rgba(ink, 0.6),
+    textFaint: rgba(ink, 0.38),
+    heading: ink,
+    tabActive: ink,
+    tabInactive: rgba(ink, 0.35),
+    accent,
+    danger: '#d93025',
+    track: rgba(ink, 0.1),
+    overlay: rgba(ink, 0.45),
+    shadowOpacity: 0.1,
+  };
+}
+
+// Lista para a tela de Perfil montar os seletores de paleta.
+export const PALETTE_OPTIONS = Object.values(families).map((family) => ({
+  key: family.key,
+  label: family.label,
+  swatch: [family.ink, family.accent],
+}));
 
 // Identidade visual por tipo de mídia, reaproveitada na Home, nos cards e
 // nos cabeçalhos de detalhe.
@@ -73,13 +137,20 @@ const ThemeContext = createContext(null);
 
 export function ThemeProvider({ children }) {
   const [mode, setMode] = useState('light');
+  const [palette, setPaletteState] = useState(DEFAULT_PALETTE);
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     (async () => {
-      const stored = await AsyncStorage.getItem(STORAGE_KEY);
-      if (stored === 'light' || stored === 'dark') {
-        setMode(stored);
+      const [storedMode, storedPalette] = await Promise.all([
+        AsyncStorage.getItem(MODE_KEY),
+        AsyncStorage.getItem(PALETTE_KEY),
+      ]);
+      if (storedMode === 'light' || storedMode === 'dark') {
+        setMode(storedMode);
+      }
+      if (storedPalette && families[storedPalette]) {
+        setPaletteState(storedPalette);
       }
       setLoaded(true);
     })();
@@ -87,18 +158,27 @@ export function ThemeProvider({ children }) {
 
   async function setTheme(nextMode) {
     setMode(nextMode);
-    await AsyncStorage.setItem(STORAGE_KEY, nextMode);
+    await AsyncStorage.setItem(MODE_KEY, nextMode);
+  }
+
+  async function setPalette(nextPalette) {
+    if (!families[nextPalette]) return;
+    setPaletteState(nextPalette);
+    await AsyncStorage.setItem(PALETTE_KEY, nextPalette);
   }
 
   const value = useMemo(
     () => ({
       mode,
-      colors: palettes[mode],
+      palette,
+      palettes: PALETTE_OPTIONS,
+      colors: buildPalette(families[palette] ?? families[DEFAULT_PALETTE], mode),
       status: statusPalette,
       setTheme,
+      setPalette,
       loaded,
     }),
-    [mode, loaded]
+    [mode, palette, loaded]
   );
 
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
