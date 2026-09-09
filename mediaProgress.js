@@ -23,15 +23,6 @@ export const PROGRESS_BY_TYPE = {
     totalLabel: 'Total de episódios',
     extra: null,
   },
-  animes: {
-    current: 'episodes_watched',
-    total: 'total_episodes',
-    label: 'episódios',
-    step: 'episódio',
-    currentLabel: 'Episódios assistidos',
-    totalLabel: 'Total de episódios',
-    extra: null,
-  },
   doramas: {
     current: 'episodes_watched',
     total: 'total_episodes',

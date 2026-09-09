@@ -8,7 +8,6 @@ import ProgressBar from '../components/ProgressBar';
 import { useAuth } from '../context/AuthContext';
 import { MEDIA_THEME, useTheme } from '../context/ThemeContext';
 import {
-  animesApi,
   doramasApi,
   fetchContinue,
   fetchStats,
@@ -29,7 +28,6 @@ const COLLECTIONS = [
   { key: 'series', api: seriesApi, tab: 'Mídias' },
   { key: 'filmes', api: filmesApi, tab: 'Mídias' },
   { key: 'doramas', api: doramasApi, tab: 'Mídias' },
-  { key: 'animes', api: animesApi, tab: 'Mídias' },
 ];
 
 // Cada tipo mora numa aba e numa rota de detalhe diferente.
@@ -38,7 +36,6 @@ const DETAIL_ROUTE = {
   series: { tab: 'Mídias', screen: 'MidiaDetail', editRoute: 'MidiaForm' },
   filmes: { tab: 'Mídias', screen: 'MidiaDetail', editRoute: 'MidiaForm' },
   doramas: { tab: 'Mídias', screen: 'MidiaDetail', editRoute: 'MidiaForm' },
-  animes: { tab: 'Mídias', screen: 'MidiaDetail', editRoute: 'MidiaForm' },
 };
 
 export default function HomeScreen({ navigation }) {
@@ -67,7 +64,9 @@ export default function HomeScreen({ navigation }) {
       });
 
       fetchContinue()
-        .then((items) => !cancelled && setContinueItems(items))
+        // O backend ainda devolve tipos que o app não exibe mais (animes):
+        // filtra pelo que tem rota, senão a renderização quebra.
+        .then((items) => !cancelled && setContinueItems(items.filter((item) => DETAIL_ROUTE[item.type])))
         .catch(() => {});
 
       fetchStats()

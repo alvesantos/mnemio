@@ -9,7 +9,6 @@ const OPTIONS = [
   { value: 'series', label: 'Séries' },
   { value: 'filmes', label: 'Filmes' },
   { value: 'doramas', label: 'Doramas' },
-  { value: 'animes', label: 'Animes' },
 ];
 
 export default function MidiasScreen({ navigation }) {
@@ -26,11 +25,7 @@ export default function MidiasScreen({ navigation }) {
         resourceApi={config.api}
         itemLabel={config.label}
         emptyLabel={`Nenhum(a) ${config.pluralLabel.toLowerCase()} cadastrado(a) ainda. Toca no + pra adicionar.`}
-        onAddPress={() =>
-          config.searchable
-            ? navigation.navigate('MidiaSearch', { type: activeType })
-            : navigation.navigate('MidiaForm', { type: activeType, item: null })
-        }
+        onAddPress={() => navigation.navigate('MidiaSearch', { type: activeType })}
         onEditPress={(item) => navigation.navigate('MidiaForm', { type: activeType, item })}
         onDetailPress={(item) =>
           navigation.navigate('MidiaDetail', {

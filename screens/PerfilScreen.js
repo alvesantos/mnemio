@@ -15,6 +15,11 @@ import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { fetchStats } from '../resources';
 
+// Conquistas de tipos de mídia que o app não exibe mais. O backend continua
+// contando (os dados seguem lá), mas mostrar "Finalize 10 animes" numa versão
+// sem animes só confunde.
+const HIDDEN_ACHIEVEMENTS = ['otaku'];
+
 const THEME_OPTIONS = [
   { key: 'light', label: 'Claro', icon: 'sunny' },
   { key: 'dark', label: 'Escuro', icon: 'moon' },
@@ -215,9 +220,12 @@ export default function PerfilScreen() {
     );
   }
 
-  const unlockedCount = stats?.achievements.filter((a) => a.unlocked).length ?? 0;
+  const visible = (stats?.achievements ?? []).filter(
+    (a) => !HIDDEN_ACHIEVEMENTS.includes(a.code)
+  );
+  const unlockedCount = visible.filter((a) => a.unlocked).length;
   // Desbloqueadas primeiro; dentro de cada grupo, as mais próximas do alvo.
-  const ordered = [...(stats?.achievements ?? [])].sort((a, b) => {
+  const ordered = [...visible].sort((a, b) => {
     if (a.unlocked !== b.unlocked) return a.unlocked ? -1 : 1;
     return b.progress / b.target - a.progress / a.target;
   });
@@ -275,7 +283,7 @@ export default function PerfilScreen() {
           <View style={styles.achievementsHead}>
             <Text style={[styles.sectionTitle, { color: colors.heading }]}>Conquistas</Text>
             <Text style={[styles.achievementsCount, { color: colors.textMuted }]}>
-              {unlockedCount} de {stats?.achievements.length ?? 0}
+              {unlockedCount} de {visible.length}
             </Text>
           </View>
 
