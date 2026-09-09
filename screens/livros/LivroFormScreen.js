@@ -4,6 +4,7 @@ import { livrosApi } from '../../resources';
 
 export default function LivroFormScreen({ route, navigation }) {
   const item = route.params?.item ?? null;
+  const prefill = route.params?.prefill ?? null;
   const { showAchievements } = useToast();
 
   async function handleSubmit(data) {
@@ -15,6 +16,7 @@ export default function LivroFormScreen({ route, navigation }) {
   return (
     <ItemFormScreen
       initialItem={item}
+      prefill={prefill}
       itemLabel="Livro"
       type="livros"
       onSubmit={handleSubmit}

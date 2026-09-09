@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import {
   ActivityIndicator,
+  Image,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -29,24 +30,40 @@ function toNumber(text) {
   return digits === '' ? null : Number(digits);
 }
 
-export default function ItemFormScreen({ initialItem, itemLabel, type, onSubmit, onCancel }) {
+/**
+ * `initialItem` é o item do usuário sendo editado; `prefill` é o que veio da
+ * busca no catálogo (título, pôster e a referência para vincular no cadastro).
+ * Os dois preenchem os campos, mas só o primeiro significa edição.
+ */
+export default function ItemFormScreen({
+  initialItem,
+  prefill,
+  itemLabel,
+  type,
+  onSubmit,
+  onCancel,
+}) {
   const isEditing = Boolean(initialItem);
+  const base = initialItem ?? prefill ?? null;
+  // No cadastro vindo da busca, é isso que liga o item ao catálogo. Na edição
+  // o vínculo já existe no banco e não é reenviado.
+  const mediaRef = isEditing ? null : prefill?.media_ref ?? null;
   const progress = progressFor(type);
   const { colors } = useTheme();
   const insets = useSafeAreaInsets();
 
-  const [title, setTitle] = useState(initialItem?.title ?? '');
-  const [rating, setRating] = useState(initialItem?.rating ?? null);
-  const [status, setStatus] = useState(initialItem?.status ?? 'plano');
-  const [notes, setNotes] = useState(initialItem?.notes ?? '');
+  const [title, setTitle] = useState(base?.title ?? '');
+  const [rating, setRating] = useState(base?.rating ?? null);
+  const [status, setStatus] = useState(base?.status ?? 'plano');
+  const [notes, setNotes] = useState(base?.notes ?? '');
   const [current, setCurrent] = useState(
-    progress ? String(initialItem?.[progress.current] ?? 0) : '0'
+    progress ? String(base?.[progress.current] ?? 0) : '0'
   );
   const [total, setTotal] = useState(
-    progress && initialItem?.[progress.total] != null ? String(initialItem[progress.total]) : ''
+    progress && base?.[progress.total] != null ? String(base[progress.total]) : ''
   );
   const [extra, setExtra] = useState(
-    progress?.extra ? String(initialItem?.[progress.extra.field] ?? 0) : '0'
+    progress?.extra ? String(base?.[progress.extra.field] ?? 0) : '0'
   );
 
   const [saving, setSaving] = useState(false);
@@ -64,6 +81,10 @@ export default function ItemFormScreen({ initialItem, itemLabel, type, onSubmit,
       status,
       notes: notes.trim() === '' ? null : notes.trim(),
     };
+
+    if (mediaRef) {
+      payload.media_ref = mediaRef;
+    }
 
     if (progress) {
       payload[progress.current] = toNumber(current) ?? 0;
@@ -97,6 +118,33 @@ export default function ItemFormScreen({ initialItem, itemLabel, type, onSubmit,
         contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + 120 }]}
         keyboardShouldPersistTaps="handled"
       >
+        {prefill && !isEditing ? (
+          <View style={[styles.prefillCard, { backgroundColor: colors.surfaceAlt }]}>
+            {prefill.poster_url ? (
+              <Image
+                source={{ uri: prefill.poster_url }}
+                style={styles.prefillPoster}
+                resizeMode="cover"
+              />
+            ) : null}
+            <View style={styles.prefillText}>
+              <Text style={[styles.prefillTitle, { color: colors.heading }]} numberOfLines={2}>
+                {prefill.title}
+              </Text>
+              {prefill.release_year ? (
+                <Text style={[styles.prefillMeta, { color: colors.textMuted }]}>
+                  {prefill.release_year}
+                </Text>
+              ) : null}
+              {prefill.synopsis ? (
+                <Text style={[styles.prefillSynopsis, { color: colors.textMuted }]} numberOfLines={4}>
+                  {prefill.synopsis}
+                </Text>
+              ) : null}
+            </View>
+          </View>
+        ) : null}
+
         <Text style={[styles.label, { color: colors.textMuted }]}>Título</Text>
         <TextInput
           style={inputStyle}
@@ -236,6 +284,32 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: 20,
+  },
+  prefillCard: {
+    flexDirection: 'row',
+    gap: 12,
+    padding: 12,
+    borderRadius: 14,
+  },
+  prefillPoster: {
+    width: 58,
+    height: 86,
+    borderRadius: 8,
+  },
+  prefillText: {
+    flex: 1,
+    gap: 4,
+  },
+  prefillTitle: {
+    fontSize: 15,
+    fontWeight: '700',
+  },
+  prefillMeta: {
+    fontSize: 12,
+  },
+  prefillSynopsis: {
+    fontSize: 12,
+    lineHeight: 17,
   },
   label: {
     fontSize: 12.5,

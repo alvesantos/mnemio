@@ -2,6 +2,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useTheme } from '../context/ThemeContext';
 import LivrosListScreen from '../screens/livros/LivrosListScreen';
 import LivroFormScreen from '../screens/livros/LivroFormScreen';
+import LivroSearchScreen from '../screens/livros/LivroSearchScreen';
 import MediaDetailScreen from '../screens/MediaDetailScreen';
 
 const Stack = createNativeStackNavigator();
@@ -20,6 +21,11 @@ export default function LivrosStack() {
       }}
     >
       <Stack.Screen name="LivrosList" component={LivrosListScreen} options={{ title: 'Livros' }} />
+      <Stack.Screen
+        name="LivroSearch"
+        component={LivroSearchScreen}
+        options={{ title: 'Buscar livros' }}
+      />
       <Stack.Screen
         name="LivroForm"
         component={LivroFormScreen}

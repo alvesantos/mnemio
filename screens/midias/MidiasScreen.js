@@ -26,7 +26,11 @@ export default function MidiasScreen({ navigation }) {
         resourceApi={config.api}
         itemLabel={config.label}
         emptyLabel={`Nenhum(a) ${config.pluralLabel.toLowerCase()} cadastrado(a) ainda. Toca no + pra adicionar.`}
-        onAddPress={() => navigation.navigate('MidiaForm', { type: activeType, item: null })}
+        onAddPress={() =>
+          config.searchable
+            ? navigation.navigate('MidiaSearch', { type: activeType })
+            : navigation.navigate('MidiaForm', { type: activeType, item: null })
+        }
         onEditPress={(item) => navigation.navigate('MidiaForm', { type: activeType, item })}
         onDetailPress={(item) =>
           navigation.navigate('MidiaDetail', {

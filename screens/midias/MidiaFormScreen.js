@@ -3,7 +3,7 @@ import { useToast } from '../../context/ToastContext';
 import { MIDIA_TYPES } from './midiaTypes';
 
 export default function MidiaFormScreen({ route, navigation }) {
-  const { type, item } = route.params;
+  const { type, item, prefill } = route.params;
   const config = MIDIA_TYPES[type];
   const { showAchievements } = useToast();
 
@@ -16,6 +16,7 @@ export default function MidiaFormScreen({ route, navigation }) {
   return (
     <ItemFormScreen
       initialItem={item}
+      prefill={prefill}
       itemLabel={config.label}
       type={type}
       onSubmit={handleSubmit}

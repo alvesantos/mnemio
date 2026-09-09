@@ -2,6 +2,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useTheme } from '../context/ThemeContext';
 import MidiasScreen from '../screens/midias/MidiasScreen';
 import MidiaFormScreen from '../screens/midias/MidiaFormScreen';
+import MidiaSearchScreen from '../screens/midias/MidiaSearchScreen';
 import MediaDetailScreen from '../screens/MediaDetailScreen';
 import { MIDIA_TYPES } from '../screens/midias/midiaTypes';
 
@@ -21,6 +22,13 @@ export default function MidiasStack() {
       }}
     >
       <Stack.Screen name="MidiasHome" component={MidiasScreen} options={{ title: 'Mídias' }} />
+      <Stack.Screen
+        name="MidiaSearch"
+        component={MidiaSearchScreen}
+        options={({ route }) => ({
+          title: `Buscar ${MIDIA_TYPES[route.params.type].pluralLabel.toLowerCase()}`,
+        })}
+      />
       <Stack.Screen
         name="MidiaForm"
         component={MidiaFormScreen}

@@ -8,7 +8,7 @@ export default function LivrosListScreen({ navigation }) {
       resourceApi={livrosApi}
       itemLabel="Livro"
       emptyLabel="Nenhum livro cadastrado ainda. Toca no + pra adicionar."
-      onAddPress={() => navigation.navigate('LivroForm', { item: null })}
+      onAddPress={() => navigation.navigate('LivroSearch')}
       onEditPress={(item) => navigation.navigate('LivroForm', { item })}
       onDetailPress={(item) =>
         navigation.navigate('LivroDetail', {

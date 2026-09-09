@@ -33,3 +33,26 @@ export function fetchStats() {
 export function fetchContinue() {
   return api.get('/me/continue').then((res) => res.data);
 }
+
+// --------------------------------------------------------------------------
+// Catálogo de mídias
+//
+// A busca vai direto na fonte externa (TMDB, AniList, Google Books) pelo
+// backend. Nada é gravado até o usuário abrir o detalhe ou cadastrar o item.
+// --------------------------------------------------------------------------
+
+export function searchMedia({ type, query, limit = 20, signal }) {
+  return api
+    .get('/busca', { params: { tipo: type, q: query, limit }, signal })
+    .then((res) => ({
+      results: res.data,
+      // A fonte não respondeu e o backend serviu só o que já estava em cache.
+      degraded: res.headers['x-search-degraded'] === 'true',
+    }));
+}
+
+export function fetchMediaItem({ type, source, externalId }) {
+  return api
+    .get(`/midias/${type}/${source}/${encodeURIComponent(externalId)}`)
+    .then((res) => res.data);
+}
