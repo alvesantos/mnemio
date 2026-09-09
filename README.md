@@ -26,6 +26,27 @@ cp .env.example .env
 
 Tela de login fica em `screens/LoginScreen.js`. Tem espaço reservado pro logo (`logoPlaceholder`) — troque por `<Image>` quando tiver a arte.
 
+## Busca de mídias
+
+O botão "+" das listas abre `components/MediaSearchScreen.js`, que busca em tempo real
+nas fontes externas pelo backend (`GET /busca`): TMDB para filmes, séries e doramas,
+Google Books para livros. O que o usuário escolher vai para o formulário já preenchido,
+com `media_ref` — é isso que liga a avaliação ao catálogo.
+
+- Debounce de 350 ms e `AbortController` cancelando a busca anterior: uma request por
+  pausa da digitação, não por tecla.
+- Se a fonte externa estiver fora, a tela mostra um aviso discreto e os resultados que já
+  estiverem em cache — nunca um alerta de erro.
+- "Cadastrar manualmente" continua disponível para o que a fonte não tiver.
+
+O app cuida de livros, séries, filmes e doramas. Anime foi removido da interface (a API
+da AniList está desativada), mas os dados continuam na API — voltar é reinserir as
+entradas em `screens/midias/midiaTypes.js`, `mediaProgress.js`, `context/ThemeContext.js`,
+`resources.js` e `screens/HomeScreen.js`.
+
+Como a busca e o cache funcionam do lado do servidor: `docs/busca-e-cache-de-midias.md`
+no repositório da API.
+
 ## Rodando
 
 ```bash
