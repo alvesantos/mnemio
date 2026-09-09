@@ -8,6 +8,7 @@ import { MIDIA_TYPES } from './midiaTypes';
 const OPTIONS = [
   { value: 'series', label: 'Séries' },
   { value: 'filmes', label: 'Filmes' },
+  { value: 'doramas', label: 'Doramas' },
   { value: 'animes', label: 'Animes' },
 ];
 

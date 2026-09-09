@@ -122,6 +122,7 @@ export const MEDIA_THEME = {
   series: { label: 'Série', plural: 'Séries', icon: 'tv', gradient: ['#12D6C4', '#0C8F91'] },
   filmes: { label: 'Filme', plural: 'Filmes', icon: 'film', gradient: ['#FF7A7A', '#D93D5A'] },
   animes: { label: 'Anime', plural: 'Animes', icon: 'sparkles', gradient: ['#FFB84D', '#F76B1C'] },
+  doramas: { label: 'Dorama', plural: 'Doramas', icon: 'heart', gradient: ['#F58BB0', '#C3417A'] },
 };
 
 export const STATUS_META = statusPalette;

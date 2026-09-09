@@ -7,7 +7,15 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import ProgressBar from '../components/ProgressBar';
 import { useAuth } from '../context/AuthContext';
 import { MEDIA_THEME, useTheme } from '../context/ThemeContext';
-import { animesApi, fetchContinue, fetchStats, filmesApi, livrosApi, seriesApi } from '../resources';
+import {
+  animesApi,
+  doramasApi,
+  fetchContinue,
+  fetchStats,
+  filmesApi,
+  livrosApi,
+  seriesApi,
+} from '../resources';
 
 function getGreeting() {
   const hour = new Date().getHours();
@@ -20,6 +28,7 @@ const COLLECTIONS = [
   { key: 'livros', api: livrosApi, tab: 'Livros' },
   { key: 'series', api: seriesApi, tab: 'Mídias' },
   { key: 'filmes', api: filmesApi, tab: 'Mídias' },
+  { key: 'doramas', api: doramasApi, tab: 'Mídias' },
   { key: 'animes', api: animesApi, tab: 'Mídias' },
 ];
 
@@ -28,6 +37,7 @@ const DETAIL_ROUTE = {
   livros: { tab: 'Livros', screen: 'LivroDetail', editRoute: 'LivroForm' },
   series: { tab: 'Mídias', screen: 'MidiaDetail', editRoute: 'MidiaForm' },
   filmes: { tab: 'Mídias', screen: 'MidiaDetail', editRoute: 'MidiaForm' },
+  doramas: { tab: 'Mídias', screen: 'MidiaDetail', editRoute: 'MidiaForm' },
   animes: { tab: 'Mídias', screen: 'MidiaDetail', editRoute: 'MidiaForm' },
 };
 

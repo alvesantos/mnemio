@@ -14,6 +14,7 @@ export const livrosApi = createResourceApi('/livros');
 export const seriesApi = createResourceApi('/series');
 export const filmesApi = createResourceApi('/filmes');
 export const animesApi = createResourceApi('/animes');
+export const doramasApi = createResourceApi('/doramas');
 
 // Indexado pelo mesmo identificador usado pelo backend em /me/continue,
 // para navegar direto do item devolvido por lá.
@@ -22,6 +23,7 @@ export const API_BY_TYPE = {
   series: seriesApi,
   filmes: filmesApi,
   animes: animesApi,
+  doramas: doramasApi,
 };
 
 export function fetchStats() {
